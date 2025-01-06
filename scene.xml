@@ -1,0 +1,13 @@
+<mujoco>
+    <include file="a1.xml"/>
+    
+    <asset>
+        <hfield name="terrain" nrow="100" ncol="100" size="10 10 1 0.1"/>
+        <material name="terrain_mat" rgba=".8 .8 .7 1"/>
+    </asset>
+
+    <worldbody>
+        <light directional="true" diffuse=".8 .8 .8" specular=".2 .2 .2" pos="0 0 5" dir="0 0 -1"/>
+        <geom type="hfield" hfield="terrain" material="terrain_mat" pos="-5 -5 0"/>
+    </worldbody>
+</mujoco>
