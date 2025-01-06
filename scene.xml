@@ -1,5 +1,6 @@
 <mujoco>
     <include file="a1.xml"/>
+    <option gravity="0 0 -9.81"/>
     
     <asset>
         <hfield name="terrain" nrow="100" ncol="100" size="10 10 1 0.1"/>

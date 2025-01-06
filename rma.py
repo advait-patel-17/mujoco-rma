@@ -7,9 +7,11 @@ from scipy.ndimage import gaussian_filter
 
 class MujocoSimulation:
     def __init__(self):
-        self.timestep = 0.025
+        self.timestep = 0.0025
         self.control_freq = 100
         self.max_steps = 1000
+        
+        print("\nInitializing simulation...")
         
         # Generate terrain first to avoid pause during visualization
         self._generate_terrain_data()
@@ -20,6 +22,10 @@ class MujocoSimulation:
         
         # Apply pre-generated terrain
         self.model.hfield_data[:] = self.terrain_data
+        
+        # Print initial positions
+        print(f"Robot initial height: {self.data.qpos[2]:.3f}")
+        print(f"Terrain height range: {self.terrain_data.min():.3f} to {self.terrain_data.max():.3f}")
         
         self.paused = False
         self.camera_config = {
@@ -53,7 +59,7 @@ class MujocoSimulation:
         
         # Normalize and scale
         terrain = (terrain - terrain.min()) / (terrain.max() - terrain.min())
-        terrain *= 0.27  # Lower height scaling from original 0.27
+        terrain *= 0.15  # Lower height scaling from original 0.27
         
         self.terrain_data = terrain.flatten()
         
@@ -71,10 +77,18 @@ class MujocoSimulation:
         
     def step(self, action):
         if not self.paused:
+
             self.data.ctrl[:] = action
             
             for _ in range(int(1.0 / (self.control_freq * self.timestep))):
+
+                # Print state before step
+                height = self.data.qpos[2]
+                velocity = self.data.qvel[2]
+                
                 mujoco.mj_step(self.model, self.data)
+                
+                # Print every 100 steps
             
             obs = self._get_obs()
             done = self._check_termination()
